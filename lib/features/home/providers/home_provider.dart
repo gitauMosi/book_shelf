@@ -1,0 +1,8 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'home_notifier.dart';
+import 'home_state.dart';
+
+
+final homeProvider =
+    NotifierProvider<HomeNotifier, HomeState>(HomeNotifier.new);
