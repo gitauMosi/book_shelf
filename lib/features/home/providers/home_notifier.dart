@@ -37,11 +37,13 @@ class HomeNotifier extends Notifier<HomeState> {
           nextUrl: response.next,
           isLoading: false,
         );
+
       } 
-    } catch (_) {
+    } catch (e) {
       state = state.copyWith(
         isLoading: false,
         hasError: true,
+        error: e.toString(),
       );
     }
   }
@@ -60,11 +62,13 @@ class HomeNotifier extends Notifier<HomeState> {
         books: [...state.books, ...response.results],
         nextUrl: response.next,
         isLoading: false,
+
       );
-    } catch (_) {
+    } catch (e) {
       state = state.copyWith(
         isLoading: false,
         hasError: true,
+        error: e.toString(),
       );
     }
   }

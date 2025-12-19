@@ -1,5 +1,5 @@
 
 class AppStrings {
   AppStrings._();
-  static const String appName = 'Book Shelf';
+  static const String appName = 'BookShelf';
 }

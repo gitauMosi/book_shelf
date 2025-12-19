@@ -14,6 +14,7 @@ class Book {
   final String readingEaseScore;
   final String coverImage;
   final bool? removedFromCatalog;
+  final bool? isFavorite;
 
   Book({
     required this.id,
@@ -29,6 +30,7 @@ class Book {
     required this.readingEaseScore,
     required this.coverImage,
     this.removedFromCatalog,
+    this.isFavorite = false,
   });
 
   factory Book.fromJson(Map<String, dynamic> json) {

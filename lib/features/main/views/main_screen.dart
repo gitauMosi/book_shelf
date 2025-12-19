@@ -1,42 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/routes/app_routes.dart';
-import '../providers/subject_provider.dart';
+import '../../bookmark/views/bookmark_screen.dart';
+import '../../home/views/home_screen.dart';
+
+final mainScreenIndexProvider = NotifierProvider<ScreenIndex, int>(
+  ScreenIndex.new,
+);
+
+class ScreenIndex extends Notifier<int> {
+  @override
+  int build() {
+    return 0;
+  }
+
+  void increment(int index) {
+    state = index;
+  }
+}
 
 class MainScreen extends ConsumerWidget {
   const MainScreen({super.key});
 
-  void fetchSubjectsTest(WidgetRef ref) async {
-    try {
-      final resp = await ref.read(fetchSubjectsProvider.future);
-      print("Response: $resp");
-    } catch (e) {
-      print("Error: $e");
-    }
-  }
+  final List<Widget> _pages = const [HomeScreen(), BookmarkScreen()];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () => fetchSubjectsTest(ref),
-              child: Text("Fetch subjects"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.home);
-              },
-              child: Text("Navigate to Home Screen"),
-            ),
-          ],
-        ),
+      body: _pages[ref.watch(mainScreenIndexProvider)],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: ref.watch(mainScreenIndexProvider),
+        onTap: (index) {
+          ref.read(mainScreenIndexProvider.notifier).increment(index);
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bookmark),
+            label: 'Bookmarks',
+          ),
+        ],
       ),
     );
   }

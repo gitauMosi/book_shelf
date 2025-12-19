@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/routes/app_routes.dart';
-import '../../../core/utils/subject_utils.dart';
 import '../providers/onboarding_notifier.dart';
 import '../providers/onboarding_state.dart';
 
@@ -184,15 +183,10 @@ class OnboardingScreen extends ConsumerWidget {
             const SizedBox(height: 32),
 
             // Subject grid
-            GridView.builder(
+            ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1.2,
-              ),
+
               itemCount: state.subjects.length,
               itemBuilder: (context, index) {
                 final subject = state.subjects[index];
@@ -202,6 +196,7 @@ class OnboardingScreen extends ConsumerWidget {
                   onTap: () => notifier.toggleSubject(subject),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.symmetric(vertical: 6),
                     decoration: BoxDecoration(
                       color: isSelected
                           ? const Color(0xFF46BD61).withOpacity(0.1)
@@ -214,58 +209,60 @@ class OnboardingScreen extends ConsumerWidget {
                         width: isSelected ? 2 : 1,
                       ),
                     ),
-                    child: Stack(
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              getSubjectIcon(subject),
-                              size: 32,
-                              color: isSelected
-                                  ? const Color(0xFF46BD61)
-                                  : Colors.grey[600],
-                            ),
-                            const SizedBox(height: 8),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Stack(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.book_outlined,
+                                size: 32,
+                                color: isSelected
+                                    ? const Color(0xFF46BD61)
+                                    : Colors.grey[600],
                               ),
-                              child: Text(
-                                subject.length > 10
-                                    ? '${subject.substring(0, 10)}...'
-                                    : subject,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: isSelected
-                                      ? const Color(0xFF46BD61)
-                                      : Colors.grey[700],
+                              const SizedBox(height: 8),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
                                 ),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
+                                child: Text(
+                                  subject,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: isSelected
+                                        ? const Color(0xFF46BD61)
+                                        : Colors.grey[700],
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        if (isSelected)
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: Container(
-                              padding: const EdgeInsets.all(2),
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF46BD61),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.check,
-                                size: 12,
-                                color: Colors.white,
-                              ),
-                            ),
+                            ],
                           ),
-                      ],
+                          if (isSelected)
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: Container(
+                                padding: const EdgeInsets.all(2),
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFF46BD61),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.check,
+                                  size: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -305,7 +302,7 @@ class OnboardingScreen extends ConsumerWidget {
               notifier.nextPage();
             } else {
               // Navigate to home screen
-              Navigator.pushReplacementNamed(context, AppRoutes.main);
+              Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (_) => false);
             }
           },
           style: ElevatedButton.styleFrom(

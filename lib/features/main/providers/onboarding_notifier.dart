@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'onboarding_state.dart';
+import 'subject_provider.dart';
 
 final onboardingProvider =
     NotifierProvider<OnboardingNotifier, OnboardingState>(
@@ -18,12 +19,14 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
       pageController.dispose();
     });
 
+    _loadSubjects();
+
     return OnboardingState(
       currentPage: 0,
       selectedSubjects: const [],
       pageController: pageController,
       pages: _defaultPages,
-      subjects: _defaultSubjects,
+      subjects: []  ,
     );
   }
 
@@ -68,6 +71,20 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
     'Physical Education',
     'Foreign Languages',
   ];
+
+  Future<void> _loadSubjects() async {
+    try {
+      final resp = await ref.read(fetchSubjectsProvider.future);
+      updateSubjects(resp);
+    } catch (e) {
+      updateSubjects(_defaultSubjects);
+      rethrow;
+    }
+  }
+
+  void updateSubjects(List<String> subjects) {
+    state = state.copyWith(subjects: subjects);
+  }
 
   void updateCurrentPage(int page) {
     state = state.copyWith(currentPage: page);
