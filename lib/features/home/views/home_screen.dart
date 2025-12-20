@@ -1,11 +1,14 @@
-import 'package:book_shelf/core/constants/app_styles.dart';
-import 'package:book_shelf/core/constants/app_strings.dart';
-import 'package:book_shelf/features/home/components/book_tile.dart';
-import 'package:book_shelf/features/home/components/featured_books_tile.dart';
-import 'package:book_shelf/features/home/providers/home_provider.dart';
-import 'package:book_shelf/features/home/providers/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/constants/app_strings.dart';
+import '../../../core/constants/app_styles.dart';
+import '../../../core/network/network_listener.dart';
+import '../../bookmark/providers/bookmark_provider.dart';
+import '../components/book_tile.dart';
+import '../components/featured_books_tile.dart';
+import '../providers/home_provider.dart';
+import '../providers/home_state.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -27,18 +30,20 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: () {
-        if (state.isLoading && state.books.isEmpty) {
-          return const _LoadingIndicator();
-        } else if (state.hasError && state.books.isEmpty) {
-          return _ErrorView(
-            error: state.error ?? 'Failed to load books',
-            onRetry: () => ref.read(homeProvider.notifier).loadBooks(),
-          );
-        } else {
-          return _BookListView(state: state);
-        }
-      }(),
+      body: NetworkListener(
+        child: () {
+          if (state.isLoading && state.books.isEmpty) {
+            return const _LoadingIndicator();
+          } else if (state.hasError && state.books.isEmpty) {
+            return _ErrorView(
+              error: state.error ?? 'Failed to load books',
+              onRetry: () => ref.read(homeProvider.notifier).loadBooks(),
+            );
+          } else {
+            return _BookListView(state: state);
+          }
+        }(),
+      ),
     );
   }
 }
@@ -140,13 +145,39 @@ class __BookListViewState extends ConsumerState<_BookListView> {
                     itemBuilder: (context, index) {
                       final book = books.reversed.elementAt(index);
                       if (book == null) return const SizedBox.shrink();
-                      return FeaturedBookTile(book: book);
+                      return FeaturedBookTile(
+                        book: book,
+                        onBookmarkTap: () {
+                          try {
+                            ref
+                                .read(bookmarkProvider.notifier)
+                                .toggleBookmark(book);
+
+                             ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Bookmark updated',
+                                ),
+                              ),
+                            );
+
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Failed to update bookmark: $e',
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      );
                     },
                   ),
           ),
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 24)),
-        
+
         // Discover Books Section
         SliverToBoxAdapter(
           child: Padding(
@@ -164,7 +195,7 @@ class __BookListViewState extends ConsumerState<_BookListView> {
           ),
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 16)),
-        
+
         // Main Books List
         if (books.isNotEmpty)
           SliverPadding(
@@ -187,17 +218,15 @@ class __BookListViewState extends ConsumerState<_BookListView> {
                 child: Text(
                   'No books found',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
                 ),
               ),
             ),
           ),
-        
+
         // Footer (Loading/Error/End indicator)
-        SliverToBoxAdapter(
-          child: _buildFooter(),
-        ),
+        SliverToBoxAdapter(child: _buildFooter()),
         const SliverToBoxAdapter(child: SizedBox(height: 16)),
       ],
     );
@@ -207,9 +236,9 @@ class __BookListViewState extends ConsumerState<_BookListView> {
     return Text(
       '$count ${count == 1 ? 'book' : 'books'}',
       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            color: Theme.of(context).colorScheme.primary,
-            fontWeight: FontWeight.w600,
-          ),
+        color: Theme.of(context).colorScheme.primary,
+        fontWeight: FontWeight.w600,
+      ),
     );
   }
 
@@ -218,10 +247,7 @@ class __BookListViewState extends ConsumerState<_BookListView> {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 24),
         child: Center(
-          child: Text(
-            'No more books',
-            style: TextStyle(color: Colors.grey),
-          ),
+          child: Text('No more books', style: TextStyle(color: Colors.grey)),
         ),
       );
     }
@@ -245,7 +271,8 @@ class __BookListViewState extends ConsumerState<_BookListView> {
       );
     }
 
-    if (_isLoadingMore || (widget.state.isLoading && widget.state.books.isNotEmpty)) {
+    if (_isLoadingMore ||
+        (widget.state.isLoading && widget.state.books.isNotEmpty)) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 24),
         child: Center(child: CircularProgressIndicator.adaptive()),
@@ -297,22 +324,19 @@ class _ErrorView extends StatelessWidget {
             Text(
               'Failed to load books',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                color: Theme.of(context).colorScheme.error,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               error,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 24),
-            FilledButton(
-              onPressed: onRetry,
-              child: const Text('Try Again'),
-            ),
+            FilledButton(onPressed: onRetry, child: const Text('Try Again')),
           ],
         ),
       ),

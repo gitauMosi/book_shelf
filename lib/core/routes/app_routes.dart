@@ -1,11 +1,13 @@
-
-
-import 'package:book_shelf/features/home/views/home_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../../data/models/book.dart';
+import '../../features/bookshelf/bookshelf_screen.dart';
+import '../../features/home/views/books_details_screen.dart';
+import '../../features/home/views/home_screen.dart';
 import '../../features/main/views/main_screen.dart';
 import '../../features/main/views/onboarding_screen.dart';
 import '../../features/main/views/splash_screen.dart';
+import '../../features/settings/settings_screen.dart';
 
 class AppRoutes {
   AppRoutes._();
@@ -13,9 +15,10 @@ class AppRoutes {
   static const String splash = '/splash';
   static const String onboarding = '/onboarding';
   static const String home = '/home';
+  static const String bookshelf = '/bookshelf';
   static const String settings = '/settings';
-  static const String profile = '/profile';
-  
+  static const String bookDetails = '/book_details';
+  static const String unknown = '/unknown';
 }
 
 Map<String, Widget Function(BuildContext)> routes = {
@@ -23,6 +26,13 @@ Map<String, Widget Function(BuildContext)> routes = {
   AppRoutes.splash: (context) => SplashScreen(),
   AppRoutes.onboarding: (context) => OnboardingScreen(),
   AppRoutes.home: (context) => HomeScreen(),
-  AppRoutes.settings: (context) => const Scaffold(body: Center(child: Text('Settings Page'))),
-  AppRoutes.profile: (context) => const Scaffold(body: Center(child: Text('Profile Page'))),
+  AppRoutes.bookshelf: (context) => const BookshelfScreen(),
+  AppRoutes.settings: (context) => const SettingsScreen(),
+  AppRoutes.bookDetails: (context) => BookDetailsScreen(
+    book: ModalRoute.of(context)?.settings.arguments as Book,
+  ),
+  AppRoutes.unknown: (context) => Scaffold(
+    appBar: AppBar(title: const Text('Unknown Route')),
+    body: const Center(child: Text('404 - Page Not Found')),
+  ),
 };

@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_styles.dart';
 import '../../../data/models/book.dart';
-import '../views/books_details_screen.dart';
+import '../../home/views/books_details_screen.dart';
 
-class BookTile extends StatelessWidget {
+class BookMarkedTile extends StatelessWidget {
   final Book book;
-
-  const BookTile({super.key, required this.book});
+  const BookMarkedTile({super.key, required this.book});
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +15,22 @@ class BookTile extends StatelessWidget {
       child: Card(
         elevation: 0,
         color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppStyles.cardBorderRadius)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppStyles.cardBorderRadius),
+        ),
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 4,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          leading: Container(
+            width: 50,
+            height: 70,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                image: NetworkImage(book.coverImage),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          leading: _buildBookCover(),
           title: Text(
             book.title,
             maxLines: 2,
@@ -43,10 +51,11 @@ class BookTile extends StatelessWidget {
                 )
               : null,
           trailing: Icon(
-            Icons.bookmark_outline_rounded,
+            Icons.favorite_outline,
             color: Theme.of(context).colorScheme.outline,
           ),
           onTap: () {
+            // Navigate to book details screen
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) =>
@@ -55,28 +64,6 @@ class BookTile extends StatelessWidget {
             );
           },
         ),
-      ),
-    );
-  }
-
-  Widget _buildBookCover() {
-    return Container(
-      width: 60,
-      //height: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade300,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Image.network(
-        book.coverImage,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Icon(
-            Icons.menu_book_rounded,
-            size: 60,
-            color: Colors.grey.shade500,
-          );
-        },
       ),
     );
   }

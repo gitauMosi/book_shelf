@@ -1,18 +1,12 @@
-
 import 'package:book_shelf/data/models/book.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 
 class BookDetailsScreen extends ConsumerStatefulWidget {
   final Book book;
   final String? heroTag;
 
-  const BookDetailsScreen({
-    super.key,
-    required this.book,
-    this.heroTag,
-  });
+  const BookDetailsScreen({super.key, required this.book, this.heroTag});
 
   @override
   ConsumerState<BookDetailsScreen> createState() => _BookDetailsScreenState();
@@ -26,7 +20,7 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final book = widget.book;
-    final heroTag = widget.heroTag ?? 'book-${book.id}';
+    final heroTag = widget.heroTag ?? '${book.id}';
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -34,128 +28,130 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
         physics: const BouncingScrollPhysics(),
         slivers: [
           // Book Cover and App Bar
-          SliverAppBar(
-            expandedHeight: 320,
-            collapsedHeight: kToolbarHeight,
-            pinned: true,
-            floating: false,
-            snap: false,
-            stretch: true,
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            flexibleSpace: FlexibleSpaceBar(
-              collapseMode: CollapseMode.pin,
-              background: _BookCoverImage(
-                book: book,
-                heroTag: heroTag,
-              ),
-            ),
-            leading: IconButton(
-              icon: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black.withOpacity(0.5),
-                ),
-                padding: const EdgeInsets.all(8),
-                child: const Icon(Icons.arrow_back_rounded, size: 24),
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-            actions: [
-              IconButton(
-                icon: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black.withOpacity(0.5),
-                  ),
-                  padding: const EdgeInsets.all(8),
-                  child: const Icon(Icons.share_rounded, size: 24),
-                ),
-                onPressed: _shareBook,
-              ),
-            ],
-          ),
+          _bookCoverAndAppBar(book, heroTag, context),
 
           // Book Details Content
-          SliverList(
-            delegate: SliverChildListDelegate([
-              Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.background,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Title and Author
-                      Text(
-                        book.title,
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              height: 1.3,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        book.authors.first.name,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Book Metadata
-                      //_BookMetadata(book: book),
-                      const SizedBox(height: 24),
-
-                      // Action Buttons
-                      _ActionButtons(
-                        isFavorite: _isFavorite,
-                        isInLibrary: _isInLibrary,
-                        onFavoritePressed: _toggleFavorite,
-                        onAddToLibraryPressed: _toggleLibrary,
-                        onReadPressed: _readBook,
-                      ),
-                      const SizedBox(height: 32),
-
-                      // Description
-                      if (book.summary.isNotEmpty == true) ...[
-                        Text(
-                          'Description',
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                        ),
-                        const SizedBox(height: 12),
-                        _BookDescription(
-                          description: book.summary,
-                          isExpanded: _isDescriptionExpanded,
-                          onToggle: () => setState(() {
-                            _isDescriptionExpanded = !_isDescriptionExpanded;
-                          }),
-                        ),
-                        const SizedBox(height: 32),
-                      ],
-
-                      // Additional Information
-                      //_AdditionalInformation(book: book),
-                    ],
-                  ),
-                ),
-              ),
-            ]),
-          ),
+          _booksDetailsContent(context, book),
         ],
       ),
       bottomNavigationBar: _BottomActionBar(
         onReadPressed: _readBook,
         onBuyPressed: _buyBook,
       ),
+    );
+  }
+
+  SliverList _booksDetailsContent(BuildContext context, Book book) {
+    return SliverList(
+      delegate: SliverChildListDelegate([
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.background,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title and Author
+                Text(
+                  book.title,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    height: 1.3,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  book.authors.first.name,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Action Buttons
+                _ActionButtons(
+                  isFavorite: _isFavorite,
+                  isInLibrary: _isInLibrary,
+                  onFavoritePressed: _toggleFavorite,
+                  onAddToLibraryPressed: _toggleLibrary,
+                  onReadPressed: _readBook,
+                ),
+                const SizedBox(height: 32),
+
+                // Description
+                if (book.summary.isNotEmpty == true) ...[
+                  Text(
+                    'Description',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _BookDescription(
+                    description: book.summary,
+                    isExpanded: _isDescriptionExpanded,
+                    onToggle: () => setState(() {
+                      _isDescriptionExpanded = !_isDescriptionExpanded;
+                    }),
+                  ),
+                  const SizedBox(height: 32),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+
+  SliverAppBar _bookCoverAndAppBar(
+    Book book,
+    String heroTag,
+    BuildContext context,
+  ) {
+    return SliverAppBar(
+      expandedHeight: 320,
+      collapsedHeight: kToolbarHeight,
+      pinned: true,
+      floating: false,
+      snap: false,
+      stretch: true,
+      backgroundColor: Colors.transparent,
+      foregroundColor: Colors.white,
+      flexibleSpace: FlexibleSpaceBar(
+        collapseMode: CollapseMode.pin,
+        background: _BookCoverImage(book: book, heroTag: heroTag),
+      ),
+      leading: IconButton(
+        icon: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.black.withOpacity(0.5),
+          ),
+          padding: const EdgeInsets.all(8),
+          child: const Icon(Icons.arrow_back_rounded, size: 24),
+        ),
+        onPressed: () => Navigator.pop(context),
+      ),
+      actions: [
+        IconButton(
+          icon: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black.withOpacity(0.5),
+            ),
+            padding: const EdgeInsets.all(8),
+            child: const Icon(Icons.share_rounded, size: 24),
+          ),
+          onPressed: _shareBook,
+        ),
+      ],
     );
   }
 
@@ -178,9 +174,7 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
       SnackBar(
         content: const Text('Share functionality is not implemented yet.'),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -191,9 +185,7 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
       SnackBar(
         content: const Text('Opening book...'),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -204,12 +196,10 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
       SnackBar(
         content: const Text('Buy functionality is not implemented yet.'),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
-}
+  }
 }
 
 // Book Cover Image Widget
@@ -217,10 +207,7 @@ class _BookCoverImage extends StatelessWidget {
   final Book book;
   final String heroTag;
 
-  const _BookCoverImage({
-    required this.book,
-    required this.heroTag,
-  });
+  const _BookCoverImage({required this.book, required this.heroTag});
 
   @override
   Widget build(BuildContext context) {
@@ -269,85 +256,22 @@ class _BookCoverImage extends StatelessWidget {
                       )
                     : null,
               ),
-              child:Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Center(
-                        child: Icon(
-                          Icons.menu_book_rounded,
-                          size: 64,
-                        ),
-                      ),
-                    )
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.menu_book_rounded,
+                    size: 64,
+                    color: Theme.of(context).iconTheme.color?.withOpacity(0.4),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
       ],
-    );
-  }
-}
-
-// Book Metadata Widget
-// class _BookMetadata extends StatelessWidget {
-//   final Book book;
-
-//   const _BookMetadata({required this.book});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Wrap(
-//       spacing: 12,
-//       runSpacing: 8,
-//       children: [
-//         if (book.publishedYear != null)
-//           _MetadataChip(
-//             icon: Icons.calendar_today_rounded,
-//             label: book.publishedYear.toString(),
-//           ),
-//         if (book.pages != null)
-//           _MetadataChip(
-//             icon: Icons.auto_stories_rounded,
-//             label: '${book.pages} pages',
-//           ),
-//         if (book.genre != null && book.genre!.isNotEmpty)
-//           _MetadataChip(
-//             icon: Icons.category_rounded,
-//             label: book.genre!,
-//           ),
-//         if (book.language != null)
-//           _MetadataChip(
-//             icon: Icons.language_rounded,
-//             label: book.language!,
-//           ),
-//         if (book.averageRating != null)
-//           _MetadataChip(
-//             icon: Icons.star_rounded,
-//             label: '${book.averageRating!.toStringAsFixed(1)}/5',
-//           ),
-//       ],
-//     );
-//   }
-// }
-
-// Metadata Chip Widget
-class _MetadataChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _MetadataChip({
-    required this.icon,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Chip(
-      avatar: Icon(icon, size: 16),
-      label: Text(label),
-      backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-      side: BorderSide.none,
-      visualDensity: VisualDensity.compact,
     );
   }
 }
@@ -378,6 +302,7 @@ class _ActionButtons extends StatelessWidget {
             icon: const Icon(Icons.play_arrow_rounded),
             label: const Text('Read Now'),
             style: ElevatedButton.styleFrom(
+              elevation: 0.1,
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
           ),
@@ -387,9 +312,7 @@ class _ActionButtons extends StatelessWidget {
           onPressed: onFavoritePressed,
           icon: Icon(
             isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-            color: isFavorite
-                ? Theme.of(context).colorScheme.error
-                : null,
+            color: isFavorite ? Theme.of(context).colorScheme.error : null,
           ),
           tooltip: isFavorite ? 'Remove from favorites' : 'Add to favorites',
         ),
@@ -430,9 +353,9 @@ class _BookDescription extends StatelessWidget {
           maxLines: isExpanded ? null : 4,
           overflow: isExpanded ? null : TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                height: 1.6,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            height: 1.6,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
         if (description.length > 200)
           TextButton(
@@ -455,90 +378,6 @@ class _BookDescription extends StatelessWidget {
   }
 }
 
-// Additional Information Widget
-// class _AdditionalInformation extends StatelessWidget {
-//   final Book book;
-
-//   const _AdditionalInformation({required this.book});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Text(
-//           'Additional Information',
-//           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-//                 fontWeight: FontWeight.w600,
-//               ),
-//         ),
-//         const SizedBox(height: 16),
-//         _InfoRow(
-//           label: 'Publisher',
-//           value: book.publisher ?? 'Not specified',
-//         ),
-//         const SizedBox(height: 8),
-//         _InfoRow(
-//           label: 'ISBN',
-//           value: book.isbn ?? 'Not specified',
-//         ),
-//         const SizedBox(height: 8),
-//         if (book.edition != null)
-//           Column(
-//             children: [
-//               _InfoRow(
-//                 label: 'Edition',
-//                 value: book.edition!,
-//               ),
-//               const SizedBox(height: 8),
-//             ],
-//           ),
-//         _InfoRow(
-//           label: 'Format',
-//           value: book.format ?? 'Not specified',
-//         ),
-//       ],
-//     );
-//   }
-// }
-
-// Info Row Widget
-class _InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 100,
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                  fontWeight: FontWeight.w500,
-                ),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Text(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 // Bottom Action Bar
 class _BottomActionBar extends StatelessWidget {
   final VoidCallback onReadPressed;
@@ -556,12 +395,12 @@ class _BottomActionBar extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          border: Border(
-            top: BorderSide(
-              color: Theme.of(context).colorScheme.outlineVariant,
-              width: 1,
-            ),
-          ),
+          // border: Border(
+          //   top: BorderSide(
+          //     color: Theme.of(context).colorScheme.outlineVariant,
+          //     width: 1,
+          //   ),
+          // ),
         ),
         padding: const EdgeInsets.all(16),
         child: Row(
