@@ -67,7 +67,7 @@ class OnboardingScreen extends ConsumerWidget {
     BuildContext context,
   ) {
     return Container(
-      color: page.color.withOpacity(0.3),
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -76,7 +76,7 @@ class OnboardingScreen extends ConsumerWidget {
             width: 120,
             height: 120,
             decoration: BoxDecoration(
-              color: page.color,
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -107,7 +107,9 @@ class OnboardingScreen extends ConsumerWidget {
             child: Text(
               page.description,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                color: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.color?.withOpacity(0.7),
                 fontSize: 16,
                 height: 1.5,
               ),
@@ -172,7 +174,9 @@ class OnboardingScreen extends ConsumerWidget {
             Text(
               'Choose all subjects you\'re currently studying. You can update this later.',
               style: TextStyle(
-                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                color: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.color?.withOpacity(0.7),
                 fontSize: 16,
                 height: 1.5,
               ),
@@ -197,9 +201,13 @@ class OnboardingScreen extends ConsumerWidget {
                     margin: const EdgeInsets.symmetric(vertical: 6),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                          ? Theme.of(
+                              context,
+                            ).colorScheme.primary.withOpacity(0.1)
                           : Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(AppStyles.cardBorderRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppStyles.cardBorderRadius,
+                      ),
                       border: Border.all(
                         color: isSelected
                             ? Theme.of(context).colorScheme.primary
@@ -234,7 +242,9 @@ class OnboardingScreen extends ConsumerWidget {
                                     fontWeight: FontWeight.w500,
                                     color: isSelected
                                         ? Theme.of(context).colorScheme.primary
-                                        : Theme.of(context).textTheme.bodyMedium?.color,
+                                        : Theme.of(
+                                            context,
+                                          ).textTheme.bodyMedium?.color,
                                   ),
                                   textAlign: TextAlign.center,
                                   maxLines: 2,
@@ -252,10 +262,12 @@ class OnboardingScreen extends ConsumerWidget {
                                   color: Theme.of(context).colorScheme.primary,
                                   shape: BoxShape.circle,
                                 ),
-                                child:  Icon(
+                                child: Icon(
                                   Icons.check,
                                   size: 12,
-                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  color: Theme.of(
+                                    context,
+                                  ).scaffoldBackgroundColor,
                                 ),
                               ),
                             ),
@@ -289,8 +301,10 @@ class OnboardingScreen extends ConsumerWidget {
               : notifier.skipToEnd,
           child: Text(
             'Skip',
-            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, 
-            fontSize: 16),
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyMedium?.color,
+              fontSize: 16,
+            ),
           ),
         ),
 
@@ -301,7 +315,11 @@ class OnboardingScreen extends ConsumerWidget {
               notifier.nextPage();
             } else {
               // Navigate to home screen
-              Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (_) => false);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AppRoutes.main,
+                (_) => false,
+              );
             }
           },
           style: ElevatedButton.styleFrom(
@@ -330,7 +348,6 @@ class OnboardingScreen extends ConsumerWidget {
   ) {
     return Column(
       children: [
-        // Selected count
         Container(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
           decoration: BoxDecoration(
@@ -348,7 +365,7 @@ class OnboardingScreen extends ConsumerWidget {
               const SizedBox(width: 8),
               Text(
                 '${state.selectedSubjects.length} subjects selected',
-                style:  TextStyle(
+                style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.w600,
                 ),

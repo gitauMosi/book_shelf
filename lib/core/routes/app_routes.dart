@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../data/models/book.dart';
-import '../../features/bookshelf/bookshelf_screen.dart';
+import '../../features/bookshelf/views/bookshelf_screen.dart';
+import '../../features/bookshelf/views/bookshelf_view_screen.dart';
 import '../../features/home/views/books_details_screen.dart';
 import '../../features/home/views/home_screen.dart';
 import '../../features/main/views/main_screen.dart';
@@ -18,6 +19,8 @@ class AppRoutes {
   static const String bookshelf = '/bookshelf';
   static const String settings = '/settings';
   static const String bookDetails = '/book_details';
+  static const String search = '/search';
+  static const String bookshelfView = '/bookshelf_view';
   static const String unknown = '/unknown';
 }
 
@@ -30,6 +33,9 @@ Map<String, Widget Function(BuildContext)> routes = {
   AppRoutes.settings: (context) => const SettingsScreen(),
   AppRoutes.bookDetails: (context) => BookDetailsScreen(
     book: ModalRoute.of(context)?.settings.arguments as Book,
+  ),
+  AppRoutes.bookshelfView: (context) => BookshelfViewScreen(
+    bookshelfId: ModalRoute.of(context)?.settings.arguments as String,
   ),
   AppRoutes.unknown: (context) => Scaffold(
     appBar: AppBar(title: const Text('Unknown Route')),

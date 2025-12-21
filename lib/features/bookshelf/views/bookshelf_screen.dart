@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/constants/app_strings.dart';
-import '../../../core/constants/app_styles.dart';
 import '../../../core/network/network_listener.dart';
-import '../../bookmark/providers/bookmark_provider.dart';
-import '../components/book_tile.dart';
-import '../components/featured_books_tile.dart';
-import '../providers/home_provider.dart';
-import '../providers/home_state.dart';
+import '../components/bookshelf_tile.dart';
+import '../components/gradient_shimmer_tile.dart';
+import '../providers/bookshelf_provider.dart';
+import '../providers/bookshelf_state.dart';
 
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+class BookshelfScreen extends ConsumerWidget {
+  const BookshelfScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(homeProvider);
+    final state = ref.watch(bookshelfProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppStrings.appName, style: AppStyles.logoTextStyle),
+        title: Text("Shelfs"),
         centerTitle: false,
         actions: [
           IconButton(
@@ -32,12 +29,13 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: NetworkListener(
         child: () {
-          if (state.isLoading && state.books.isEmpty) {
+          if (state.isLoading && state.bookshelves.isEmpty) {
             return const _LoadingIndicator();
-          } else if (state.hasError && state.books.isEmpty) {
+          } else if (state.hasError && state.bookshelves.isEmpty) {
             return _ErrorView(
-              error: state.error ?? 'Failed to load books',
-              onRetry: () => ref.read(homeProvider.notifier).loadBooks(),
+              error: state.error ?? 'Failed to load books Shelfs',
+              onRetry: () =>
+                  ref.read(bookshelfProvider.notifier).loadBookshelves(),
             );
           } else {
             return _BookListView(state: state);
@@ -49,7 +47,7 @@ class HomeScreen extends ConsumerWidget {
 }
 
 class _BookListView extends ConsumerStatefulWidget {
-  final HomeState state;
+  final BookshelfState state;
 
   const _BookListView({required this.state});
 
@@ -79,8 +77,8 @@ class __BookListViewState extends ConsumerState<_BookListView> {
   }
 
   void _loadInitialData() {
-    if (widget.state.books.isEmpty) {
-      ref.read(homeProvider.notifier).loadBooks();
+    if (widget.state.bookshelves.isEmpty) {
+      ref.read(bookshelfProvider.notifier).loadBookshelves();
     }
   }
 
@@ -104,7 +102,7 @@ class __BookListViewState extends ConsumerState<_BookListView> {
 
     setState(() => _isLoadingMore = true);
     try {
-      await ref.read(homeProvider.notifier).loadMoreBooks();
+      await ref.read(bookshelfProvider.notifier).loadMoreBookshelves();
     } finally {
       setState(() => _isLoadingMore = false);
     }
@@ -112,65 +110,11 @@ class __BookListViewState extends ConsumerState<_BookListView> {
 
   @override
   Widget build(BuildContext context) {
-    final books = widget.state.books ?? [];
+    final books = widget.state.bookshelves ?? [];
 
     return CustomScrollView(
       controller: _scrollController,
       slivers: [
-        // Featured Books Section
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 16,
-              bottom: 8,
-            ),
-            child: Text(
-              'Featured books',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: 245,
-            child: books.isEmpty
-                ? const Center(child: Text('No books available'))
-                : ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: books.length >= 10 ? 10 : books.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
-                    itemBuilder: (context, index) {
-                      final book = books.reversed.elementAt(index);
-                      if (book == null) return const SizedBox.shrink();
-                      return FeaturedBookTile(
-                        book: book,
-                        onBookmarkTap: () {
-                          try {
-                            ref
-                                .read(bookmarkProvider.notifier)
-                                .toggleBookmark(book);
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Bookmark updated')),
-                            );
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Failed to update bookmark: $e'),
-                              ),
-                            );
-                          }
-                        },
-                      );
-                    },
-                  ),
-          ),
-        ),
-        const SliverToBoxAdapter(child: SizedBox(height: 24)),
-
         // Discover Books Section
         SliverToBoxAdapter(
           child: Padding(
@@ -179,7 +123,7 @@ class __BookListViewState extends ConsumerState<_BookListView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Discover Books',
+                  'Discover Books Shelfs',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 _buildBookCount(books.length),
@@ -197,9 +141,9 @@ class __BookListViewState extends ConsumerState<_BookListView> {
               itemCount: books.length,
               separatorBuilder: (_, __) => const SizedBox(height: 6),
               itemBuilder: (context, index) {
-                final book = books[index];
-                if (book == null) return const SizedBox.shrink();
-                return BookTile(book: book);
+                final shelf = books[index];
+                if (shelf == null) return const SizedBox.shrink();
+                return BookShelfTile(shelf: shelf);
               },
             ),
           )
@@ -227,7 +171,7 @@ class __BookListViewState extends ConsumerState<_BookListView> {
 
   Widget _buildBookCount(int count) {
     return Text(
-      '$count ${count == 1 ? 'book' : 'books'}',
+      '$count ${count == 1 ? 'shelf' : 'books shelfs'}',
       style: Theme.of(context).textTheme.titleSmall?.copyWith(
         color: Theme.of(context).colorScheme.primary,
         fontWeight: FontWeight.w600,
@@ -236,22 +180,25 @@ class __BookListViewState extends ConsumerState<_BookListView> {
   }
 
   Widget _buildFooter() {
-    if (!widget.state.hasMore && widget.state.books.isNotEmpty) {
+    if (!widget.state.hasMore && widget.state.bookshelves.isNotEmpty) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 24),
         child: Center(
-          child: Text('No more books', style: TextStyle(color: Colors.grey)),
+          child: Text(
+            'No more books Shelfs',
+            style: TextStyle(color: Colors.grey),
+          ),
         ),
       );
     }
 
-    if (widget.state.hasError && widget.state.books.isNotEmpty) {
+    if (widget.state.hasError && widget.state.bookshelves.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         child: Column(
           children: [
             Text(
-              'Failed to load more books',
+              'Failed to load more books Shelfs',
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
             const SizedBox(height: 8),
@@ -265,7 +212,7 @@ class __BookListViewState extends ConsumerState<_BookListView> {
     }
 
     if (_isLoadingMore ||
-        (widget.state.isLoading && widget.state.books.isNotEmpty)) {
+        (widget.state.isLoading && widget.state.bookshelves.isNotEmpty)) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 24),
         child: Center(child: CircularProgressIndicator.adaptive()),
@@ -273,24 +220,6 @@ class __BookListViewState extends ConsumerState<_BookListView> {
     }
 
     return const SizedBox.shrink();
-  }
-}
-
-class _LoadingIndicator extends StatelessWidget {
-  const _LoadingIndicator();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator.adaptive(),
-          SizedBox(height: 16),
-          Text('Loading books...'),
-        ],
-      ),
-    );
   }
 }
 
@@ -315,7 +244,7 @@ class _ErrorView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Failed to load books',
+              'Failed to load books Shelfs',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: Theme.of(context).colorScheme.error,
               ),
@@ -335,4 +264,24 @@ class _ErrorView extends StatelessWidget {
       ),
     );
   }
+}
+
+class _LoadingIndicator extends StatelessWidget {
+  const _LoadingIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.builder(
+        itemCount: 10,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return GradientShimmerTile();
+        },
+      ),
+    );
+  }
+
+  
 }

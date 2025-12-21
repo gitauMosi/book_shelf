@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 class ApiClient {
-  final String baseUrl;
+  final String? baseUrl;
   final String? xRapidapiKey;
   final String? xRapidapiHost;
   final Dio dio;
@@ -12,14 +12,17 @@ class ApiClient {
     required this.xRapidapiHost,
     required this.dio,
   });
-  // get
+
   Future<Response> get(
-    String path, {
+     {
+      String? path,
+      String? nextUrl,
     Map<String, dynamic>? queryParameters,
   }) async {
     try {
+      final url = nextUrl ?? '$baseUrl$path';
       final response = await dio.get(
-        '$baseUrl$path',
+        url,
         queryParameters: queryParameters,
         options: Options(
           headers: {

@@ -3,7 +3,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/repositories/books_repository_impl.dart';
+import '../../data/repositories/bookshelf_repository_impl.dart';
 import '../../data/repositories/subject_repository_impl.dart';
+import '../../domain/repositories/bookhelf_repository.dart';
 import '../../domain/repositories/books_repository.dart';
 import '../services/app_client.dart';
 
@@ -37,6 +39,10 @@ final subjectRepoImplProvider = Provider<SubjectRepositoryImpl>((ref) {
 
 final booksRepositoryProvider = Provider<BooksRepository>((ref) {
   return BooksRepositoryImpl(apiClient: ref.watch(apiClientProvider));
+});
+
+final bookshelfRepositoryProvider = Provider<BooksShelfRepository>((ref) {
+  return BookshelfRepositoryImpl(apiClient: ref.watch(apiClientProvider));
 });
 
 

@@ -26,7 +26,7 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
       selectedSubjects: const [],
       pageController: pageController,
       pages: _defaultPages,
-      subjects: []  ,
+      subjects: [],
     );
   }
 
@@ -36,21 +36,18 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
       title: 'Welcome to StudySync',
       description:
           'Your personal learning companion for academic success and organized study routines.',
-      color: Color(0xFFE8F5E9),
     ),
     OnboardingPage(
       image: '📚',
       title: 'Select Your Subjects',
       description:
           'Choose the subjects you\'re studying to get personalized content and study plans.',
-      color: Color(0xFFF3E5F5),
     ),
     OnboardingPage(
       image: '🎯',
       title: 'Set Your Goals',
       description:
           'Define your academic goals and track your progress with our smart analytics.',
-      color: Color(0xFFE3F2FD),
     ),
   ];
 
@@ -78,7 +75,7 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
       updateSubjects(resp);
     } catch (e) {
       updateSubjects(_defaultSubjects);
-      rethrow;
+      throw Exception('Failed to load subjects');
     }
   }
 

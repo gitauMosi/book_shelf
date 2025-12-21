@@ -8,7 +8,7 @@ class SubjectRepositoryImpl extends SubjectsRepository {
   @override
   Future<List<String>> fetchSubjects() async {
     try {
-      final response = await apiClient.get('/subjects');
+      final response = await apiClient.get(path: '/subjects');
       if (response.statusCode == 200) {
         final data = response.data["results"] as List<dynamic>;
         return data.map((subject) => subject["name"].toString()).toList();

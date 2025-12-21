@@ -148,7 +148,7 @@ class _CustomTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(leadingIcon),
+      leading: CircleAvatar(child: Icon(leadingIcon, size: 16,),),
       title: Text(title),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: ontap,

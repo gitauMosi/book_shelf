@@ -150,8 +150,8 @@ class FeaturedBookTile extends StatelessWidget {
           color: Theme.of(
             context,
           ).colorScheme.onSurfaceVariant.withOpacity(0.1),
-          child: Image.network(
-            book.coverImage,
+          child: book.coverImage != null ? Image.network(
+            book.coverImage ?? '',
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
               return Icon(
@@ -160,6 +160,12 @@ class FeaturedBookTile extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               );
             },
+          ) : Center(
+            child: Icon(
+              Icons.menu_book_rounded,
+              size: 40,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
       ),

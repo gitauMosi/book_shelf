@@ -19,17 +19,32 @@ class BookMarkedTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppStyles.cardBorderRadius),
         ),
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 4,
+          ),
           leading: Container(
             width: 50,
             height: 70,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                image: NetworkImage(book.coverImage),
-                fit: BoxFit.cover,
-              ),
+              image: book.coverImage != null
+                  ? DecorationImage(
+                      image: NetworkImage(book.coverImage ?? ''),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+              color: Theme.of(context).cardColor,
             ),
+            child: book.coverImage == null
+                ? Center(
+                    child: Icon(
+                      Icons.book,
+                      size: 30,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  )
+                : null,
           ),
           title: Text(
             book.title,

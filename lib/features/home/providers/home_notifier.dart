@@ -26,7 +26,6 @@ class HomeNotifier extends Notifier<HomeState> {
 
     try {
       if(state.books.isNotEmpty){
-        // already loaded
         state = state.copyWith(isLoading: false);
         return;
       }else{

@@ -67,8 +67,8 @@ class BookTile extends StatelessWidget {
         color: Colors.grey.shade300,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Image.network(
-        book.coverImage,
+      child: book.coverImage != null ? Image.network(
+        book.coverImage ?? '',
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
           return Icon(
@@ -77,6 +77,12 @@ class BookTile extends StatelessWidget {
             color: Colors.grey.shade500,
           );
         },
+      ) : Center(
+        child: Icon(
+          Icons.menu_book_rounded,
+          size: 40,
+          color: Colors.grey.shade500,
+        ),
       ),
     );
   }

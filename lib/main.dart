@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: AppStrings.appName,
       theme: appThemeLight,
-      darkTheme: appThemeDark,
+      //darkTheme: appThemeDark,
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.splash,
       routes: routes,

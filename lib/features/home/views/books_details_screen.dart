@@ -42,6 +42,7 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
   }
 
   SliverList _booksDetailsContent(BuildContext context, Book book) {
+    final bookSummary = book.summary ?? '';
     return SliverList(
       delegate: SliverChildListDelegate([
         Container(
@@ -85,7 +86,7 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
                 const SizedBox(height: 32),
 
                 // Description
-                if (book.summary.isNotEmpty == true) ...[
+                if (bookSummary.isNotEmpty  == true) ...[
                   Text(
                     'Description',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -94,7 +95,7 @@ class _BookDetailsScreenState extends ConsumerState<BookDetailsScreen> {
                   ),
                   const SizedBox(height: 12),
                   _BookDescription(
-                    description: book.summary,
+                    description: bookSummary,
                     isExpanded: _isDescriptionExpanded,
                     onToggle: () => setState(() {
                       _isDescriptionExpanded = !_isDescriptionExpanded;
@@ -251,7 +252,7 @@ class _BookCoverImage extends StatelessWidget {
                 ],
                 image: book.coverImage != null
                     ? DecorationImage(
-                        image: NetworkImage(book.coverImage),
+                        image: NetworkImage(book.coverImage ?? ''),
                         fit: BoxFit.cover,
                       )
                     : null,

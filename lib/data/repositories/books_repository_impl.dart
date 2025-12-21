@@ -10,7 +10,7 @@ class BooksRepositoryImpl extends BooksRepository {
   @override
   Future<BooksResponse> fetchBooks({String? nextUrl}) async {
     try {
-      final response = await apiClient.get(nextUrl ?? '/books');
+      final response = await apiClient.get(path: '/books', nextUrl: nextUrl);
 
       if (response.statusCode == 200) {
         return BooksResponse.fromJson(response.data);
