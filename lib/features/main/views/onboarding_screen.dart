@@ -315,6 +315,7 @@ class OnboardingScreen extends ConsumerWidget {
               notifier.nextPage();
             } else {
               // Navigate to home screen
+              notifier.saveFavouritesSubjects(state.selectedSubjects);
               Navigator.pushNamedAndRemoveUntil(
                 context,
                 AppRoutes.main,

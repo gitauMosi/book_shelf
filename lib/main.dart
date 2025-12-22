@@ -4,25 +4,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/constants/app_strings.dart';
 import 'core/routes/app_routes.dart';
+import 'core/services/db_client.dart';
 import 'core/theme/theme.dart';
+import 'features/settings/providers/settings_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
 
+  await DbClient().init();
+
   runApp(ProviderScope(child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
     return MaterialApp(
       title: AppStrings.appName,
+      themeMode: settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       theme: appThemeLight,
-      //darkTheme: appThemeDark,
+      darkTheme: appThemeDark,
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.splash,
       routes: routes,

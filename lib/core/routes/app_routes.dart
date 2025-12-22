@@ -8,7 +8,7 @@ import '../../features/home/views/home_screen.dart';
 import '../../features/main/views/main_screen.dart';
 import '../../features/main/views/onboarding_screen.dart';
 import '../../features/main/views/splash_screen.dart';
-import '../../features/settings/settings_screen.dart';
+import '../../features/settings/views/settings_screen.dart';
 
 class AppRoutes {
   AppRoutes._();

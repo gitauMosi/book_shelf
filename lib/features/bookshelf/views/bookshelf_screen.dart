@@ -22,7 +22,7 @@ class BookshelfScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              // TODO: Implement search
+              // 
             },
           ),
         ],
@@ -110,7 +110,7 @@ class __BookListViewState extends ConsumerState<_BookListView> {
 
   @override
   Widget build(BuildContext context) {
-    final books = widget.state.bookshelves ?? [];
+    final books = widget.state.bookshelves;
 
     return CustomScrollView(
       controller: _scrollController,
@@ -139,10 +139,9 @@ class __BookListViewState extends ConsumerState<_BookListView> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverList.separated(
               itemCount: books.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 6),
+              separatorBuilder: (_, _) => const SizedBox(height: 6),
               itemBuilder: (context, index) {
                 final shelf = books[index];
-                if (shelf == null) return const SizedBox.shrink();
                 return BookShelfTile(shelf: shelf);
               },
             ),

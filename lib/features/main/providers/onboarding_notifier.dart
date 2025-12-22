@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/network/providers/network_providers.dart';
+import '../../../core/providers/app_providers.dart';
 import 'onboarding_state.dart';
 import 'subject_provider.dart';
 
@@ -69,14 +71,30 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
     'Foreign Languages',
   ];
 
-  Future<void> _loadSubjects() async {
-    try {
-      final resp = await ref.read(fetchSubjectsProvider.future);
-      updateSubjects(resp);
-    } catch (e) {
-      updateSubjects(_defaultSubjects);
-      throw Exception('Failed to load subjects');
-    }
+  void _loadSubjects() {
+    ref.listen<AsyncValue<bool>>(currentNetworkStatusProvider, (
+      _,
+      asyncIsConnected,
+    ) {
+      asyncIsConnected.when(
+        data: (isConnected) async {
+          try {
+            if (isConnected) {
+              final resp = await ref.read(fetchSubjectsProvider.future);
+              updateSubjects(resp);
+            } else {
+              updateSubjects(_defaultSubjects);
+            }
+          } catch (e) {
+            updateSubjects(_defaultSubjects);
+          }
+        },
+        error: (error, stackTrace) {
+          updateSubjects(_defaultSubjects);
+        },
+        loading: () {},
+      );
+    });
   }
 
   void updateSubjects(List<String> subjects) {
@@ -126,5 +144,27 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
+  }
+
+  Future<bool> saveFavouritesSubjects(List<String> values) async {
+    try {
+      await ref
+          .watch(subjectRepoImplProvider)
+          .saveFavouriteSubjectsInDb(values: values);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<List<String>> getFavouritesSubjects() async {
+    try {
+      final subjects = await ref
+          .watch(subjectRepoImplProvider)
+          .getFavouriteSubjectsFromDb();
+      return subjects;
+    } catch (e) {
+      return [];
+    }
   }
 }

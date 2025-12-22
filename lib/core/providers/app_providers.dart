@@ -4,10 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/repositories/books_repository_impl.dart';
 import '../../data/repositories/bookshelf_repository_impl.dart';
+import '../../data/repositories/settings_repository_impl.dart';
 import '../../data/repositories/subject_repository_impl.dart';
 import '../../domain/repositories/bookhelf_repository.dart';
 import '../../domain/repositories/books_repository.dart';
+import '../../domain/repositories/settings_repository.dart';
 import '../services/app_client.dart';
+import '../services/db_client.dart';
 
 // dio provider
 final dioProvider = Provider<Dio>((ref) {
@@ -31,10 +34,18 @@ final apiClientProvider = Provider<ApiClient>((ref) {
   );
 });
 
-
+// Db Provider
+final dbClientProvider = Provider<DbClient>((ref) {
+  final db = DbClient();
+  //db.init();
+  return db;
+});
 // Repo providers
 final subjectRepoImplProvider = Provider<SubjectRepositoryImpl>((ref) {
-  return SubjectRepositoryImpl(apiClient: ref.watch(apiClientProvider));
+  return SubjectRepositoryImpl(
+    apiClient: ref.watch(apiClientProvider),
+    dbClient: ref.watch(dbClientProvider),
+  );
 });
 
 final booksRepositoryProvider = Provider<BooksRepository>((ref) {
@@ -45,5 +56,7 @@ final bookshelfRepositoryProvider = Provider<BooksShelfRepository>((ref) {
   return BookshelfRepositoryImpl(apiClient: ref.watch(apiClientProvider));
 });
 
-
-
+final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
+  final db = ref.read(dbClientProvider);
+  return SettingsRepositoryImpl(db);
+});

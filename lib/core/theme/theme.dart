@@ -157,7 +157,7 @@ final ThemeData appThemeDark = ThemeData(
     primary: const Color(0xFF46BD61),
     secondary: const Color(0xFF6C8CFF),
     tertiary: const Color(0xFFFFB74D),
-  ).copyWith(background: const Color(0xFF0B0B0C)),
+  ).copyWith(surface: const Color(0xFF0B0B0C)),
 );
 
 /// Helper to select theme by brightness.

@@ -25,7 +25,7 @@ class HomeScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              // TODO: Implement search
+              //
             },
           ),
         ],
@@ -112,7 +112,7 @@ class __BookListViewState extends ConsumerState<_BookListView> {
 
   @override
   Widget build(BuildContext context) {
-    final books = widget.state.books ?? [];
+    final books = widget.state.books;
 
     return CustomScrollView(
       controller: _scrollController,
@@ -144,7 +144,6 @@ class __BookListViewState extends ConsumerState<_BookListView> {
                     separatorBuilder: (_, __) => const SizedBox(width: 12),
                     itemBuilder: (context, index) {
                       final book = books.reversed.elementAt(index);
-                      if (book == null) return const SizedBox.shrink();
                       return FeaturedBookTile(
                         book: book,
                         onBookmarkTap: () {
@@ -198,7 +197,6 @@ class __BookListViewState extends ConsumerState<_BookListView> {
               separatorBuilder: (_, __) => const SizedBox(height: 6),
               itemBuilder: (context, index) {
                 final book = books[index];
-                if (book == null) return const SizedBox.shrink();
                 return BookTile(book: book);
               },
             ),

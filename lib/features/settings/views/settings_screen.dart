@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/constants/app_strings.dart';
+import '../../../core/constants/app_strings.dart';
+import '../providers/settings_provider.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: Padding(
@@ -42,9 +44,10 @@ class SettingsScreen extends StatelessWidget {
                     title: "Theme",
                     leadingIcon: Icons.brightness_6_outlined,
                     ontap: () {
-                      // Navigate to theme settings
+                      showThemeDialog(context, ref);
                     },
                   ),
+
                   _CustomTile(
                     title: "Font Size",
                     leadingIcon: Icons.font_download_outlined,
@@ -135,6 +138,51 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
+void showThemeDialog(BuildContext context, WidgetRef ref) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      final settings = ref.watch(settingsProvider);
+      final notifier = ref.read(settingsProvider.notifier);
+
+      return AlertDialog(
+        title: const Text('Choose Theme'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<bool>(
+              title: const Text('Light'),
+              value: false,
+              groupValue: settings.isDarkMode,
+              onChanged: (value) {
+                if (value == null) return;
+                notifier.toggleDarkMode(value);
+                Navigator.pop(context);
+              },
+            ),
+            RadioListTile<bool>(
+              title: const Text('Dark'),
+              value: true,
+              groupValue: settings.isDarkMode,
+              onChanged: (value) {
+                if (value == null) return;
+                notifier.toggleDarkMode(value);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 class _CustomTile extends StatelessWidget {
   final String title;
   final IconData leadingIcon;
@@ -148,7 +196,7 @@ class _CustomTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: CircleAvatar(child: Icon(leadingIcon, size: 16,),),
+      leading: CircleAvatar(child: Icon(leadingIcon, size: 16)),
       title: Text(title),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: ontap,

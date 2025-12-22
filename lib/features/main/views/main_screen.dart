@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../bookmark/views/bookmark_screen.dart';
 import '../../bookshelf/views/bookshelf_screen.dart';
 import '../../home/views/home_screen.dart';
-import '../../settings/settings_screen.dart';
+import '../../settings/views/settings_screen.dart';
 
 final mainScreenIndexProvider = NotifierProvider<ScreenIndex, int>(
   ScreenIndex.new,
