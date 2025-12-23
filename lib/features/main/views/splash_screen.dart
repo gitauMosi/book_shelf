@@ -69,7 +69,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
             ref.read(settingsProvider.notifier).registerUser();
           } else {
-            Navigator.pushReplacementNamed(context, AppRoutes.main);
+            Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (_)=>false);
           }
         } catch (e) {
           // Handle navigation errors

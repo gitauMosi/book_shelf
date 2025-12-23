@@ -1,9 +1,10 @@
+import 'package:book_shelf/domain/entities/book_entity.dart' as domain;
 import 'book.dart';
 
 class BooksResponse {
   final String? next;
   final String? previous;
-  final List<Book> results;
+  final List<domain.Book> results;
 
   BooksResponse({
     required this.next,
@@ -16,7 +17,7 @@ class BooksResponse {
       next: json['next'] as String?,
       previous: json['previous'] as String?,
       results: (json['results'] as List<dynamic>)
-          .map((e) => Book.fromJson(e))
+          .map((e) => domain.Book.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
   }

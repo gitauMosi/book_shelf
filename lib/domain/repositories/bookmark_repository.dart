@@ -1,9 +1,8 @@
 
-import '../../data/models/books_response.dart';
+
 import '../entities/book_entity.dart';
 
-abstract class BooksRepository {
-  Future<BooksResponse> fetchBooks({String? nextUrl});
+abstract class BookmarkRepository {
   Future<List<Book>> fetchBooksFromDb();
   Future<void> saveBooksFromDb({required List<Book> books});
 }

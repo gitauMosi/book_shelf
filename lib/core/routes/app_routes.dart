@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../data/models/book.dart';
+import '../../domain/entities/book_entity.dart';
 import '../../features/bookshelf/views/bookshelf_screen.dart';
 import '../../features/bookshelf/views/bookshelf_view_screen.dart';
 import '../../features/home/views/books_details_screen.dart';

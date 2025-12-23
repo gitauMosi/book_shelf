@@ -1,7 +1,8 @@
 
 
-import '../../../data/models/book.dart';
 
+
+import '../../../domain/entities/book_entity.dart';
 
 class HomeState {
   HomeState({

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/routes/app_routes.dart';
 import '../../../core/utils/download_count_utils.dart';
-import '../../../data/models/bookshelf.dart';
+import '../../../domain/entities/bookshelf_entity.dart';
 
 class BookShelfTile extends StatelessWidget {
   final Bookshelf shelf;

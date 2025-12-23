@@ -1,6 +1,8 @@
-import 'package:book_shelf/data/models/book.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../domain/entities/book_entity.dart';
 
 class BookDetailsScreen extends ConsumerStatefulWidget {
   final Book book;

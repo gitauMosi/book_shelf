@@ -1,4 +1,4 @@
-import '../../../data/models/bookshelf.dart';
+import '../../../domain/entities/bookshelf_entity.dart';
 
 class BookshelfState {
   final List<Bookshelf> bookshelves;

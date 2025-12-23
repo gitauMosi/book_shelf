@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/app_providers.dart';
-import '../../../data/models/bookshelf.dart';
+import '../../../domain/entities/bookshelf_entity.dart';
 import 'bookshelf_notifier.dart';
 import 'bookshelf_state.dart';
 

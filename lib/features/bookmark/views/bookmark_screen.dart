@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../data/models/book.dart';
+import '../../../domain/entities/book_entity.dart';
 import '../components/bookmarked_tile.dart';
 import '../providers/bookmark_provider.dart';
 

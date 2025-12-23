@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/utils/download_count_utils.dart';
-import '../../../data/models/bookshelf.dart';
+import '../../../domain/entities/bookshelf_entity.dart';
 import '../providers/bookshelf_provider.dart';
 
 class BookshelfViewScreen extends ConsumerWidget {

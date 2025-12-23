@@ -1,4 +1,4 @@
-import 'bookshelf.dart';
+import '../../domain/entities/bookshelf_entity.dart';
 
 class BookshelfResponse {
   final String? next;

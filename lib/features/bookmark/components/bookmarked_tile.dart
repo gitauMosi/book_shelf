@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_styles.dart';
-import '../../../data/models/book.dart';
+import '../../../domain/entities/book_entity.dart';
 import '../../home/views/books_details_screen.dart';
 
 class BookMarkedTile extends StatelessWidget {

@@ -1,23 +1,23 @@
-class Author {
-  final int id;
-  final String name;
+// class Author {
+//   final int id;
+//   final String name;
 
-  Author({
-    required this.id,
-    required this.name,
-  });
+//   Author({
+//     required this.id,
+//     required this.name,
+//   });
 
-  factory Author.fromJson(Map<String, dynamic> json) {
-    return Author(
-      id: json['id'],
-      name: json['name'],
-    );
-  }
+//   factory Author.fromJson(Map<String, dynamic> json) {
+//     return Author(
+//       id: json['id'],
+//       name: json['name'],
+//     );
+//   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-    };
-  }
-}
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'id': id,
+//       'name': name,
+//     };
+//   }
+// }

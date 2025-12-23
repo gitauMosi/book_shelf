@@ -24,15 +24,11 @@ class SettingsNotifier extends Notifier<SettingState> {
 
   Future<void> _loadFromDb() async {
     try {
-      print('Loading settings from database...');
       
       final darkMode = await _repository.getIsDarkMode();
       final notifications = await _repository.getIsNotificationAllowed();
       final fontSize = await _repository.getFontSize();
       final isNewUser = await _repository.getisNewUser();
-
-      print('Settings loaded successfully');
-      print('isNewUser: $isNewUser, isDarkMode: $darkMode, notifications: $notifications');
 
       state = state.copyWith(
         isDarkMode: darkMode,
@@ -43,7 +39,6 @@ class SettingsNotifier extends Notifier<SettingState> {
         hasError: false,
       );
     } catch (e) {
-      print('Error loading settings: $e');
       state = state.copyWith(
         isLoading: false,
         hasError: true,

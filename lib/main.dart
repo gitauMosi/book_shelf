@@ -6,6 +6,9 @@ import 'core/constants/app_strings.dart';
 import 'core/routes/app_routes.dart';
 import 'core/services/db_client.dart';
 import 'core/theme/theme.dart';
+import 'domain/entities/author_entity.dart';
+import 'domain/entities/book_entity.dart';
+import 'domain/entities/bookshelf_entity.dart';
 import 'features/settings/providers/settings_provider.dart';
 
 void main() async {
@@ -13,7 +16,12 @@ void main() async {
 
   await dotenv.load(fileName: ".env");
 
-  await DbClient().init();
+  final db = DbClient();
+  db.registerAdapter<Book>(BookAdapter());
+  db.registerAdapter<Bookshelf>(BookshelfAdapter());
+  db.registerAdapter<Author>(AuthorAdapter());
+
+  await db.init();
 
   runApp(ProviderScope(child: const MyApp()));
 }
